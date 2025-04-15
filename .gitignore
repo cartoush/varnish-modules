@@ -47,3 +47,5 @@ test-driver
 *.gcda
 *.info
 lcov/
+
+src/vmod_vcs_version.txt

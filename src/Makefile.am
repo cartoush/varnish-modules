@@ -59,6 +59,10 @@ nodist_libvmod_xkey_la_SOURCES = vcc_xkey_if.c vcc_xkey_if.h VSC_xkey.c VSC_xkey
 
 vmod_xkey.3: VSC_xkey.rst
 
+vmod_vcs_version.txt: $(nodist_libvmod_accept_la_SOURCES)
+
+DISTCLEANFILES = vmod_vcs_version.txt
+
 @BUILD_VMOD_ACCEPT@
 @BUILD_VMOD_BODYACCESS@
 @BUILD_VMOD_HEADER@
@@ -168,7 +172,8 @@ dist_doc_DATA = \
 	vmod_var.vcc \
 	vmod_vsthrottle.vcc \
 	vmod_xkey.vcc \
-	xkey.vsc
+	xkey.vsc \
+	vmod_vcs_version.txt
 
 dist_man_MANS = \
 	vmod_accept.3 \
