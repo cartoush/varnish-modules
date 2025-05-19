@@ -22,6 +22,8 @@ AM_CFLAGS = $(VARNISHAPI_CFLAGS) $(CODE_COVERAGE_CFLAGS) -I$(top_srcdir)/src/for
 AM_CPPFLAGS = $(CODE_COVERAGE_CPPFLAGS)
 AM_LDFLAGS = $(VARNISHAPI_LIBS) $(VMOD_LDFLAGS) $(CODE_COVERAGE_LDFLAGS)
 
+# Modules
+
 vmod_LTLIBRARIES = \
 	libvmod_accept.la \
 	libvmod_bodyaccess.la \
@@ -32,19 +34,6 @@ vmod_LTLIBRARIES = \
 	libvmod_var.la \
 	libvmod_vsthrottle.la \
 	libvmod_xkey.la
-
-if HAVE_RST2MAN
-dist_man_MANS = \
-	vmod_accept.3 \
-	vmod_bodyaccess.3 \
-	vmod_header.3 \
-	vmod_saintmode.3 \
-	vmod_str.3 \
-	vmod_tcp.3 \
-	vmod_var.3 \
-	vmod_vsthrottle.3 \
-	vmod_xkey.3
-endif
 
 generated_docs = $(dist_man_MANS:.3=.rst)
 
@@ -91,83 +80,85 @@ doctest:
 		rst2html --halt=2 --exit-status=2 $$i 1>/dev/null; \
 	done;
 
+# Test suite
+
 AM_TESTS_ENVIRONMENT = \
-	PATH="$(VMOD_TEST_PATH)" \
+	PATH="$(abs_builddir):$(VARNISH_TEST_PATH):$(PATH)" \
 	LD_LIBRARY_PATH="$(VARNISH_LIBRARY_PATH)"
 TEST_EXTENSIONS = .vtc
 # because of vsthrottle/test05.vtc we need larger buffers than usual
 VTC_LOG_COMPILER = varnishtest -v -b 10M
 AM_VTC_LOG_FLAGS = \
-	-Dvmod_builddir=$(abs_top_builddir)/src \
-	-Dvmod_directors="directors from \"$(VARNISHAPI_VMODDIR)/libvmod_directors.so\""
+	-p vcl_path="$(abs_top_srcdir)/vcl:$(VARNISHAPI_VCLDIR)" \
+	-p vmod_path="$(abs_builddir)/.libs:$(vmoddir):$(VARNISHAPI_VMODDIR)"
 
-VMOD_TESTS = \
-	tests/accept/test01.vtc \
-	tests/accept/test02.vtc \
-	tests/bodyaccess/test01.vtc \
-	tests/bodyaccess/test02.vtc \
-	tests/bodyaccess/test03.vtc \
-	tests/bodyaccess/test04.vtc \
-	tests/bodyaccess/test05.vtc \
-	tests/header/append.vtc \
-	tests/header/append_maxhdr_overflow.vtc \
-	tests/header/append_overflow.vtc \
-	tests/header/copy.vtc \
-	tests/header/get.vtc \
-	tests/header/import.vtc \
-	tests/header/keep-others.vtc \
-	tests/header/remove.vtc \
-	tests/header/some-data.vtc \
-	tests/header/regsub.vtc \
-	tests/saintmode/test01.vtc \
-	tests/saintmode/test02.vtc \
-	tests/saintmode/test03.vtc \
-	tests/saintmode/test04.vtc \
-	tests/saintmode/test05.vtc \
-	tests/str/test01.vtc \
-	tests/str/test02.vtc \
-	tests/str/test03.vtc \
-	tests/str/test04.vtc \
-	tests/str/test05.vtc \
-	tests/str/test06.vtc \
-	tests/str/test08.vtc \
-	tests/tcp/01-dumpinfo.vtc \
-	tests/tcp/02-congestion.vtc \
-	tests/tcp/03-read-tcpinfo.vtc \
-	tests/tcp/04-pacing.vtc \
-	tests/var/test01.vtc \
-	tests/var/test02.vtc \
-	tests/var/test03.vtc \
-	tests/var/test04.vtc \
-	tests/var/test05.vtc \
-	tests/var/test06.vtc \
-	tests/vsthrottle/test01.vtc \
-	tests/vsthrottle/test02.vtc \
-	tests/vsthrottle/test03.vtc \
-	tests/vsthrottle/test04.vtc \
-	tests/vsthrottle/test05.vtc \
-	tests/vsthrottle/test06.vtc \
-	tests/xkey/test01.vtc \
-	tests/xkey/test02.vtc \
-	tests/xkey/test03.vtc \
-	tests/xkey/test04.vtc \
-	tests/xkey/test05.vtc \
-	tests/xkey/test06.vtc \
-	tests/xkey/test07.vtc \
-	tests/xkey/test08.vtc \
-	tests/xkey/test09.vtc \
-	tests/xkey/test10.vtc \
-	tests/xkey/test11.vtc \
-	tests/xkey/test12.vtc \
-	tests/xkey/test13.vtc \
-	tests/xkey/test14.vtc
+TESTS = \
+	vtc/accept/test01.vtc \
+	vtc/accept/test02.vtc \
+	vtc/bodyaccess/test01.vtc \
+	vtc/bodyaccess/test02.vtc \
+	vtc/bodyaccess/test03.vtc \
+	vtc/bodyaccess/test04.vtc \
+	vtc/bodyaccess/test05.vtc \
+	vtc/header/append.vtc \
+	vtc/header/append_maxhdr_overflow.vtc \
+	vtc/header/append_overflow.vtc \
+	vtc/header/copy.vtc \
+	vtc/header/get.vtc \
+	vtc/header/import.vtc \
+	vtc/header/keep-others.vtc \
+	vtc/header/remove.vtc \
+	vtc/header/some-data.vtc \
+	vtc/header/regsub.vtc \
+	vtc/saintmode/test01.vtc \
+	vtc/saintmode/test02.vtc \
+	vtc/saintmode/test03.vtc \
+	vtc/saintmode/test04.vtc \
+	vtc/saintmode/test05.vtc \
+	vtc/str/test01.vtc \
+	vtc/str/test02.vtc \
+	vtc/str/test03.vtc \
+	vtc/str/test04.vtc \
+	vtc/str/test05.vtc \
+	vtc/str/test06.vtc \
+	vtc/str/test08.vtc \
+	vtc/tcp/01-dumpinfo.vtc \
+	vtc/tcp/02-congestion.vtc \
+	vtc/tcp/03-read-tcpinfo.vtc \
+	vtc/tcp/04-pacing.vtc \
+	vtc/var/test01.vtc \
+	vtc/var/test02.vtc \
+	vtc/var/test03.vtc \
+	vtc/var/test04.vtc \
+	vtc/var/test05.vtc \
+	vtc/var/test06.vtc \
+	vtc/vsthrottle/test01.vtc \
+	vtc/vsthrottle/test02.vtc \
+	vtc/vsthrottle/test03.vtc \
+	vtc/vsthrottle/test04.vtc \
+	vtc/vsthrottle/test05.vtc \
+	vtc/vsthrottle/test06.vtc \
+	vtc/xkey/test01.vtc \
+	vtc/xkey/test02.vtc \
+	vtc/xkey/test03.vtc \
+	vtc/xkey/test04.vtc \
+	vtc/xkey/test05.vtc \
+	vtc/xkey/test06.vtc \
+	vtc/xkey/test07.vtc \
+	vtc/xkey/test08.vtc \
+	vtc/xkey/test09.vtc \
+	vtc/xkey/test10.vtc \
+	vtc/xkey/test11.vtc \
+	vtc/xkey/test12.vtc \
+	vtc/xkey/test13.vtc \
+	vtc/xkey/test14.vtc
 
-TESTS = $(VMOD_TESTS)
+# Documentation
 
-EXTRA_DIST = \
+dist_doc_DATA = \
 	foreign \
 	vmod_config.h \
-	$(VMOD_TESTS) \
+	$(TESTS) \
 	vmod_accept.vcc \
 	vmod_bodyaccess.vcc \
 	vmod_header.vcc \
@@ -178,3 +169,17 @@ EXTRA_DIST = \
 	vmod_vsthrottle.vcc \
 	vmod_xkey.vcc \
 	xkey.vsc
+
+dist_man_MANS = \
+	vmod_accept.3 \
+	vmod_bodyaccess.3 \
+	vmod_header.3 \
+	vmod_saintmode.3 \
+	vmod_str.3 \
+	vmod_tcp.3 \
+	vmod_var.3 \
+	vmod_vsthrottle.3 \
+	vmod_xkey.3
+
+.rst.1:
+	$(AM_V_GEN) $(RST2MAN) $< $@

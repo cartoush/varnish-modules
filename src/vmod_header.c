@@ -180,7 +180,7 @@ vmod_append(VRT_CTX, VCL_HEADER hdr, VCL_STRANDS s)
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
 	/* prefix the strand with $hdr_name + space */
-	p[0] = hdr->what + 1;
+	p[0] = hdr->what->str;
 	p[1] = " ";
 	AN(memcpy(p + 2, s->p, s->n * sizeof *s->p));
 	st->n = s->n + 2;
@@ -207,10 +207,10 @@ vmod_get(VRT_CTX, VCL_HEADER hdr, VCL_REGEX re)
 	AN(re);
 
 	hp = VRT_selecthttp(ctx, hdr->where);
-	u = header_http_findhdr(ctx, hp, hdr->what, re);
+	u = header_http_findhdr(ctx, hp, hdr->what->str, re);
 	if (u == 0)
 		return (NULL);
-	p = hp->hd[u].b + hdr->what[0];
+	p = hp->hd[u].b + hdr->what->len;
 	while (*p == ' ' || *p == '\t')
 		p++;
 	return (p);
@@ -224,7 +224,7 @@ vmod_copy(VRT_CTX, VCL_HEADER src, VCL_HEADER dst)
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
 	src_hp = VRT_selecthttp(ctx, src->where);
-	header_http_cphdr(ctx, src_hp, src->what, dst);
+	header_http_cphdr(ctx, src_hp, src->what->str, dst);
 }
 
 VCL_VOID
@@ -236,7 +236,7 @@ vmod_remove(VRT_CTX, VCL_HEADER hdr, VCL_REGEX re)
 	AN(re);
 
 	hp = VRT_selecthttp(ctx, hdr->where);
-	header_http_Unset(ctx, hp, hdr->what, re);
+	header_http_Unset(ctx, hp, hdr->what->str, re);
 }
 
 /* XXX: http_VSLH() and http_VSLH_del() copied from cache_http.c */
@@ -319,12 +319,12 @@ selectwhere(VRT_CTX, VCL_HTTP hp)
 
 // XXX would need to know the limit
 const struct gethdr_s hdr_null[HDR_BERESP + 1] = {
-	[HDR_REQ]	= { HDR_REQ,		"\0"},
-	[HDR_REQ_TOP]	= { HDR_REQ_TOP,	"\0"},
-	[HDR_RESP]	= { HDR_RESP,		"\0"},
-	[HDR_OBJ]	= { HDR_OBJ,		"\0"},
-	[HDR_BEREQ]	= { HDR_BEREQ,		"\0"},
-	[HDR_BERESP]	= { HDR_BERESP,	"\0"}
+	[HDR_REQ]	= { HDR_REQ,		(const void*)"\0"},
+	[HDR_REQ_TOP]	= { HDR_REQ_TOP,	(const void*)"\0"},
+	[HDR_RESP]	= { HDR_RESP,		(const void*)"\0"},
+	[HDR_OBJ]	= { HDR_OBJ,		(const void*)"\0"},
+	[HDR_BEREQ]	= { HDR_BEREQ,		(const void*)"\0"},
+	[HDR_BERESP]	= { HDR_BERESP,	(const void*)"\0"}
 };
 
 
@@ -363,6 +363,6 @@ vmod_dyn(VRT_CTX, VCL_HTTP hp, VCL_STRING name)
 	what[l+2] = '\0';
 
 	hdr->where = where;
-	hdr->what = what;
+	hdr->what = (void*)what;
 	return (hdr);
 }
