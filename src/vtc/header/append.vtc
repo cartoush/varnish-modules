@@ -1,0 +1,42 @@
+varnishtest "Header-vmod: Test appending"
+
+server s1 {
+	timeout 10
+
+	rxreq
+	expect req.url == "/foo"
+	txresp -status 200 -hdr "foo: 1" -hdr "foo: 2"
+	rxreq
+	expect req.url == "/bar"
+	txresp -status 200 -hdr "foo: 1" -hdr "foo: 2"
+} -start
+
+varnish v1 -vcl+backend {
+	import header;
+
+	sub vcl_backend_response {
+		if (bereq.url == "/foo") {
+			set beresp.http.foo = "null";
+			header.append(header.dyn(beresp, 35 + 7), "is the answer");
+		} elsif ( bereq.url == "/bar") {
+			header.append(beresp.http.foo, "blatti");
+		}
+		return(deliver);
+	}
+} -start
+
+client c1 {
+	txreq -url "/foo"
+	rxresp
+	expect resp.status == 200
+	expect resp.http.foo == "null"
+	expect resp.http.42 == "is the answer"
+} -run
+
+client c2 {
+	txreq -url "/bar"
+	rxresp
+	expect resp.status == 200
+	expect resp.http.foo == 1
+} -run
+
