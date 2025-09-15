@@ -8,7 +8,7 @@ jobs:
         description: resource_class to use
         type: string
     machine:
-      image: ubuntu-2004:202101-01
+      image: default
     resource_class: << parameters.rclass >>
     working_directory: /tmp/workspace
     steps:
@@ -30,7 +30,7 @@ jobs:
                 python3-docutils \
                 python3 \
                 python3-sphinx
-            git clone https://github.com/varnishcache/varnish-cache.git /tmp/varnish-cache
+            git clone --recursive https://github.com/varnishcache/varnish-cache.git /tmp/varnish-cache
             cd /tmp/varnish-cache
             ./autogen.des
             if [ "arm.medium" = "<< parameters.rclass >>" ]; then

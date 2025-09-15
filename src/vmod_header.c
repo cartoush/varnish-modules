@@ -147,7 +147,8 @@ header_http_Unset(VRT_CTX, struct http *hp, hdr_t hdr, VCL_REGEX re)
  * XXX: the future.
  */
 static void
-header_http_cphdr(VRT_CTX, const struct http *hp, hdr_t hdr, VCL_HEADER dst)
+header_http_cphdr(VRT_CTX, const struct http *hp, hdr_t hdr,
+    VCL_HEADER dst)
 {
         unsigned u;
 	const char *p;
@@ -361,6 +362,6 @@ vmod_dyn(VRT_CTX, VCL_HTTP hp, VCL_STRING name)
 	what[l+2] = '\0';
 
 	hdr->where = where;
-	hdr->what = (hdr_t)what;
+	CAST_HDR(hdr->what, what);
 	return (hdr);
 }

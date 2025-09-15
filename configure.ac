@@ -1,5 +1,5 @@
-AC_INIT([varnish-modules], [klarlack-0.24.0])
-AC_COPYRIGHT([Copyright (c) 2016-2021 Varnish Software Group])
+AC_INIT([varnish-modules], [klarlack-0.26.0])
+AC_COPYRIGHT([Copyright (c) 2016-2024 Varnish Software Group])
 
 AC_PREREQ(2.63)
 AC_CONFIG_MACRO_DIR([m4])
@@ -30,7 +30,7 @@ PKG_CHECK_VAR([VARNISHAPI_LIBDIR], [varnishapi], [libdir])
 AC_SUBST([VARNISH_LIBRARY_PATH],
 	[$VARNISHAPI_LIBDIR:$VARNISHAPI_LIBDIR/varnish])
 
-VARNISH_PREREQ([7.5.0])
+VARNISH_PREREQ([7.7.0])
 VARNISH_VMODS([
 	accept
 	bodyaccess
