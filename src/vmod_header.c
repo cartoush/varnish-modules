@@ -154,6 +154,7 @@ header_http_cphdr(VRT_CTX, const struct http *hp, hdr_t hdr,
 	const char *p;
 	struct strands s;
 
+	INIT_OBJ(&s, STRANDS_MAGIC);
 	s.n = 1;
 
         for (u = HTTP_HDR_FIRST; u < hp->nhd; u++) {
@@ -182,6 +183,7 @@ vmod_append(VRT_CTX, VCL_HEADER hdr, VCL_STRANDS s)
 	p[0] = hdr->what->str;
 	p[1] = " ";
 	AN(memcpy(p + 2, s->p, s->n * sizeof *s->p));
+	INIT_OBJ(st, STRANDS_MAGIC);
 	st->n = s->n + 2;
 	st->p = p;
 
