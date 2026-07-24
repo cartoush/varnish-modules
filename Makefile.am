@@ -1,18 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4 -I ${VINYLAPI_DATAROOTDIR}/aclocal
 
+DISTCHECK_CONFIGURE_FLAGS = RST2MAN=:
+
 SUBDIRS = src
 
-doc_DATA = README.md LICENSE
-
-EXTRA_DIST = \
-	$(doc_DATA) \
-	CHANGES.rst
-
-# lcov support
-CODE_COVERAGE_OUTPUT_DIRECTORY = lcov
-CODE_COVERAGE_IGNORE_PATTERN = "/usr/*"
-CODE_COVERAGE_GENHTML_OPTIONS = --prefix $(abs_top_srcdir)
-
-@CODE_COVERAGE_RULES@
-
-lcov: check-code-coverage
+dist_doc_DATA = README.md LICENSE CHANGES.rst

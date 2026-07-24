@@ -6,7 +6,7 @@
 # (vmodtool requires this format.)
 #
 
-$Module accept 3 Accept VMOD
+$Module accept 3 "Accept VMOD"
 
 DESCRIPTION
 ===========

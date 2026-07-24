@@ -33,19 +33,6 @@ vmod_LTLIBRARIES = \
 	libvmod_vsthrottle.la \
 	libvmod_xkey.la
 
-if HAVE_RST2MAN
-dist_man_MANS = \
-	vmod_accept.3 \
-	vmod_bodyaccess.3 \
-	vmod_header.3 \
-	vmod_saintmode.3 \
-	vmod_str.3 \
-	vmod_tcp.3 \
-	vmod_var.3 \
-	vmod_vsthrottle.3 \
-	vmod_xkey.3
-endif
-
 generated_docs = $(dist_man_MANS:.3=.rst)
 
 libvmod_accept_la_SOURCES = vmod_accept.c
@@ -70,6 +57,12 @@ nodist_libvmod_xkey_la_SOURCES = vcc_xkey_if.c vcc_xkey_if.h VSC_xkey.c VSC_xkey
 
 vmod_xkey.3: VSC_xkey.rst
 
+DISTCLEANFILES = vmod_vcs_version.txt
+
+EXTRA_DIST = $(TESTS) foreign/hash/hash_slinger.h
+
+vmod_vcs_version.txt: $(nodist_libvmod_accept_la_SOURCES)
+
 @BUILD_VMOD_ACCEPT@
 @BUILD_VMOD_BODYACCESS@
 @BUILD_VMOD_HEADER@
@@ -81,27 +74,26 @@ vmod_xkey.3: VSC_xkey.rst
 @BUILD_VMOD_XKEY@
 @BUILD_VSC_XKEY@
 
-rst-docs: $(generated_docs)
-	mkdir -p $(top_builddir)/docs/
-	cp $(generated_docs) $(top_builddir)/docs/
-
 doctest:
 	for i in *.vcc; do \
 		../test-vclsnippet $$i; \
 		rst2html --halt=2 --exit-status=2 $$i 1>/dev/null; \
 	done;
 
+
 AM_TESTS_ENVIRONMENT = \
-	PATH="$(VMOD_TEST_PATH)" \
+	PATH="$(abs_builddir):$(VINYL_TEST_PATH):$(PATH)" \
 	LD_LIBRARY_PATH="$(VINYL_LIBRARY_PATH)"
 TEST_EXTENSIONS = .vtc
 # because of vsthrottle/test05.vtc we need larger buffers than usual
 VTC_LOG_COMPILER = vinyltest -v -b 10M
 AM_VTC_LOG_FLAGS = \
 	-Dvmod_builddir=$(abs_top_builddir)/src \
-	-Dvmod_directors="directors from \"$(VINYLAPI_VMODDIR)/libvmod_directors.so\""
+	-Dvmod_directors="directors from \"$(VINYLAPI_VMODDIR)/libvmod_directors.so\"" \
+	-p vcl_path="$(abs_top_srcdir)/vcl:$(VINYLAPI_VCLDIR)" \
+	-p vmod_path="$(abs_builddir)/.libs:$(vmoddir):$(VINYLAPI_VMODDIR)"
 
-VMOD_TESTS = \
+TESTS = \
 	tests/accept/test01.vtc \
 	tests/accept/test02.vtc \
 	tests/bodyaccess/test01.vtc \
@@ -162,12 +154,10 @@ VMOD_TESTS = \
 	tests/xkey/test13.vtc \
 	tests/xkey/test14.vtc
 
-TESTS = $(VMOD_TESTS)
+# Documentation
 
-EXTRA_DIST = \
-	foreign \
+dist_doc_DATA = \
 	vmod_config.h \
-	$(VMOD_TESTS) \
 	vmod_accept.vcc \
 	vmod_bodyaccess.vcc \
 	vmod_header.vcc \
@@ -178,3 +168,40 @@ EXTRA_DIST = \
 	vmod_vsthrottle.vcc \
 	vmod_xkey.vcc \
 	xkey.vsc
+
+if HAVE_VCS_VMOD_VERSION
+dist_doc_DATA += vmod_vcs_version.txt
+endif
+
+dist_man_MANS = \
+	vmod_accept.3 \
+	vmod_bodyaccess.3 \
+	vmod_header.3 \
+	vmod_saintmode.3 \
+	vmod_str.3 \
+	vmod_tcp.3 \
+	vmod_var.3 \
+	vmod_vsthrottle.3 \
+	vmod_xkey.3
+
+# Install test files preserving their directory structure under $(docdir),
+# instead of the default dist_doc_DATA behaviour which flattens everything.
+install-data-hook:
+	@for f in $(TESTS); do \
+		d=`dirname "$$f"`; \
+		$(MKDIR_P) "$(DESTDIR)$(docdir)/$$d"; \
+		$(INSTALL_DATA) "$(srcdir)/$$f" "$(DESTDIR)$(docdir)/$$f"; \
+	done
+
+# Remove test files and their directories on uninstall.
+uninstall-hook:
+	@for f in $(TESTS); do \
+		rm -f "$(DESTDIR)$(docdir)/$$f"; \
+	done
+	@for d in `echo "$(TESTS)" | sed 's|/[^/]*$$||' | sort -u -r`; do \
+		rmdir "$(DESTDIR)$(docdir)/$$d" 2>/dev/null || true; \
+	done
+
+
+.rst.1:
+	$(AM_V_GEN) $(RST2MAN) $< $@
