@@ -49,14 +49,14 @@ Example::
 
 $Function VOID dump_info()
 
-Write the contents of the TCP_INFO data structure into varnishlog.
+Write the contents of the TCP_INFO data structure into vinyllog.
 
 Example::
 
     tcp.dump_info();
 
 
-Example varnishlog output::
+Example vinyllog output::
 
         -   VCL_Log        tcpi: snd_mss=1448 rcv_mss=536 lost=0 retrans=0
         -   VCL_Log        tcpi2: pmtu=1500 rtt=152000 rttvar=76000 snd_cwnd=10 advmss=1448 reordering=3

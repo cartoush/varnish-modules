@@ -1,4 +1,4 @@
-$Module xkey 3 "Surrogate keys support for Varnish Cache"
+$Module xkey 3 "Surrogate keys support for Vinyl Cache"
 DESCRIPTION
 ===========
 
@@ -82,7 +82,7 @@ This requires a bit of VCL to be in place. The VCL can be found above.
 
 Then, in order to keep the web in sync with the database, a trigger is
 set up in the database. When an SKU is updated this will trigger an
-HTTP request towards the Varnish server, clearing out every object
+HTTP request towards the Vinyl server, clearing out every object
 with the matching xkey header::
 
     PURGE / HTTP/1.1
@@ -100,12 +100,12 @@ Note the xkey header. It is probably a good idea to protect
 this with an ACL so random people from the Internet cannot purge your
 cache.
 
-Varnish will find the objects and clear them out, responding with::
+Vinyl will find the objects and clear them out, responding with::
 
     HTTP/1.1 200 Purged
     Date: Thu, 24 Apr 2014 17:08:28 GMT
-    X-Varnish: 1990228115
-    Via: 1.1 Varnish
+    X-Vinyl: 1990228115
+    Via: 1.1 Vinyl
 
 The objects are now cleared.
 

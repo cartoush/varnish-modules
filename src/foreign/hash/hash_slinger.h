@@ -76,7 +76,7 @@ struct busyobj *HSH_RefBusy(const struct objcore *oc);
 struct objcore *HSH_Private(struct worker *wrk);
 struct objcore *HSH_NewObjCore(struct worker *wrk);
 
-#ifdef VARNISH_CACHE_CHILD
+#ifdef VINYL_CACHE_CHILD
 
 struct waitinglist {
 	unsigned		magic;
@@ -114,7 +114,7 @@ void HSH_Complete(struct objcore *oc);
 void HSH_DeleteObjHead(struct worker *, struct objhead *oh);
 int HSH_DerefObjHead(struct worker *, struct objhead **poh);
 int HSH_DerefObjCore(struct worker *, struct objcore **ocp);
-#endif /* VARNISH_CACHE_CHILD */
+#endif /* VINYL_CACHE_CHILD */
 
 extern const struct hash_slinger hsl_slinger;
 extern const struct hash_slinger hcl_slinger;

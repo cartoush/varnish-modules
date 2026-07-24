@@ -1,8 +1,8 @@
-$Module header 3 "Header VMOD for Varnish"
+$Module header 3 "Header VMOD for Vinyl"
 DESCRIPTION
 ===========
 
-Varnish Module for manipulation of duplicated HTTP headers, for instance
+Vinyl Module for manipulation of duplicated HTTP headers, for instance
 multiple Set-Cookie headers.
 
 .. vcl-start

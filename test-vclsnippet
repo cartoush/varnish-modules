@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Script that picks out a VCL section from a .vcc file and runs
-# varnishd -C on it to check syntax.
+# vinyld -C on it to check syntax.
 #
 # Author: Lasse Karstensen <lasse.karstensen@gmail.com>
 #
@@ -29,9 +29,9 @@ sed -e '1,/^.. vcl-start/d' \
 
 #cat $TMPFILE
 
-VDIR=/tmp/varnishd$RANDOM$RANDOM
-#RES=$(/usr/sbin/varnishd -C -f $TMPFILE -n $VDIR -p vmod_dir=/usr/lib/x86_64-linux-gnu/varnish/vmods/ 2>&1)
-RES=$(/usr/sbin/varnishd -C -f $TMPFILE -n $VDIR 2>&1)
+VDIR=/tmp/vinyld$RANDOM$RANDOM
+#RES=$(/usr/sbin/vinyld -C -f $TMPFILE -n $VDIR -p vmod_dir=/usr/lib/x86_64-linux-gnu/vinyl/vmods/ 2>&1)
+RES=$(/usr/sbin/vinyld -C -f $TMPFILE -n $VDIR 2>&1)
 RCODE=$?
 if [ $RCODE != 0 ]; then
 	printf "$RES"

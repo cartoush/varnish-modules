@@ -1,8 +1,8 @@
-$Module bodyaccess 3 "Varnish Module for request body access"
+$Module bodyaccess 3 "Vinyl Module for request body access"
 
 DESCRIPTION
 ===========
-Varnish module that lets you access the request body.
+Vinyl module that lets you access the request body.
 
 .. vcl-start
 

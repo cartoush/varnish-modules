@@ -43,7 +43,7 @@
 /*
  * Returns true if the *hdr header is the one pointed to by *hh.
  *
- * FIXME: duplication from varnishd.
+ * FIXME: duplication from vinyld.
  */
 static int
 header_http_IsHdr(const txt *hh, hdr_t hdr)

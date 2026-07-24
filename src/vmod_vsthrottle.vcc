@@ -2,7 +2,7 @@ $Module vsthrottle 3 "Throttling VMOD"
 DESCRIPTION
 ===========
 
-A Varnish vmod for rate-limiting traffic on a single Varnish
+A Vinyl vmod for rate-limiting traffic on a single Vinyl
 server. Offers a simple interface for throttling traffic on a per-key
 basis to a specific request rate.
 
@@ -38,7 +38,7 @@ Example::
     backend default { .host = "192.0.2.11"; .port = "8080"; }
 
     sub vcl_recv {
-        # Varnish will set client.identity for you based on client IP.
+        # Vinyl will set client.identity for you based on client IP.
 
         if (vsthrottle.is_denied(client.identity, 15, 10s, 30s)) {
             # Client has exceeded 15 reqs per 10s.

@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2018 Varnish Software
+ * Copyright (c) 2018 Vinyl Software
  *
  * Author: Dridi Boukelmoune <dridi.boukelmoune@gmail.com>
  *

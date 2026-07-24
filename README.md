@@ -2,7 +2,7 @@
 
 This repository is based upon
 https://github.com/varnish/varnish-modules with additions and
-necessary adjustments for varnish-cache master. It is being maintained
+necessary adjustments for vinyl-cache master. It is being maintained
 by https://uplex.de/
 
 Included:
@@ -20,7 +20,7 @@ Included:
 # Upstream notes
 
 Modules in this repository are feature-complete and are maintained to stay
-compatible with new Varnish releases and to fix bugs.  We'll also gladly
+compatible with new Vinyl releases and to fix bugs.  We'll also gladly
 considering pull requests for new features but we recommend opening an issue
 first to discuss implementation plans.
 
@@ -28,14 +28,14 @@ first to discuss implementation plans.
 
 Source releases can be downloaded from the [github release page of the project](https://github.com/varnish/varnish-modules/releases).
 
-Each release only targets one version of Varnish (visible in the realease title)
+Each release only targets one version of Vinyl (visible in the realease title)
 and the git repository sports a branch dedicated to each version, starting from
-`6.0`. This means that if you want to compile modules for Varnish `6.3`,
+`6.0`. This means that if you want to compile modules for Vinyl `6.3`,
 you need to `git checkout` the `6.3` branch of this repository
 
 Compiling, testing and installing relies on the `autotools` suite and requires:
 - the usual autotools dependencies (`make`, `automake`, `libtool`)
-- the Varnish development files (`varnish-dev` or `varnish-devel`)
+- the Vinyl development files (`vinyl-dev` or `vinyl-devel`)
 - `rst2man` (`python-sphinx`)
 
 Note that packages names given here are purely indicative and may vary depending
@@ -82,7 +82,7 @@ In this repository there is only two such vmods:
 
 The goals of this collection are:
 
-* Simplify access to vmod code for Varnish users. One package to install, not 6.
+* Simplify access to vmod code for Vinyl users. One package to install, not 6.
 * Decrease the maintenance cost that comes with having 10 different git
   repositories, each with autotools and (previously) distribution packaging files.
 
@@ -90,7 +90,7 @@ Expressed non-goals are:
 
 * Import vmods that require external libraries, like curl or geoip. This
   collection should be simple and maintenance free to run.
-* Support older releases of Varnish Cache.
+* Support older releases of Vinyl Cache.
 * Include every vmod under the sun. We'll add the important ones.
 
 Addition of further vmods is decided on a case-by-case basis. Code quality and

@@ -1,4 +1,4 @@
-AC_INIT([varnish-modules], [klarlack-0.27.0])
+AC_INIT([vinyl-modules], [klarlack-0.27.0])
 AC_COPYRIGHT([Copyright (c) 2016-2024 Varnish Software Group])
 
 AC_PREREQ(2.63)
@@ -25,13 +25,12 @@ if test "x$RST2MAN" = "xno"; then
 fi
 AM_CONDITIONAL(HAVE_RST2MAN, [test "$RST2MAN" != no])
 
-# Will be available after Varnish 5.0
-PKG_CHECK_VAR([VARNISHAPI_LIBDIR], [varnishapi], [libdir])
-AC_SUBST([VARNISH_LIBRARY_PATH],
-	[$VARNISHAPI_LIBDIR:$VARNISHAPI_LIBDIR/varnish])
+PKG_CHECK_VAR([VINYLAPI_LIBDIR], [vinylapi], [libdir])
+AC_SUBST([VINYL_LIBRARY_PATH],
+	[$VINYLAPI_LIBDIR:$VINYLAPI_LIBDIR/vinyl])
 
-VARNISH_PREREQ([8.0.0])
-VARNISH_VMODS([
+VINYL_PREREQ([9.0.0])
+VINYL_VMODS([
 	accept
 	bodyaccess
 	header
@@ -42,12 +41,12 @@ VARNISH_VMODS([
 	vsthrottle
 	xkey
 ])
-VARNISH_COUNTERS([xkey])
+VINYL_COUNTERS([xkey])
 
 save_CPPFLAGS=$CPPFLAGS
-CPPFLAGS=$VARNISHAPI_CFLAGS
+CPPFLAGS=$VINYLAPI_CFLAGS
 
-AC_CHECK_HEADERS([cache/cache_varnishd.h])
+AC_CHECK_HEADERS([cache/cache_vinyld.h])
 
 CPPFLAGS=$save_CPPFLAGS
 
