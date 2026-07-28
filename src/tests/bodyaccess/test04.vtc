@@ -12,7 +12,7 @@ server s1 {
 vinyl v1 -cli "param.set vsl_mask +Hash"
 
 vinyl v1 -vcl+backend {
-	import bodyaccess from "${vmod_builddir}/.libs/libvmod_bodyaccess.so";
+	import bodyaccess;
 	import std;
 
 	# On cache things that look like model api calls

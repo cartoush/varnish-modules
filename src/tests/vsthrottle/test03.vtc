@@ -1,7 +1,7 @@
 vtest "Test the block parameter"
 
 vinyl v1 -vcl {
-	import vsthrottle from "${vmod_builddir}/.libs/libvmod_vsthrottle.so";
+	import vsthrottle;
         backend b { .host = "${bad_ip}"; }
 
         sub vcl_recv {
@@ -48,7 +48,7 @@ client c1 {
 # same test as in test01.vtc, except that block is set with such a
 # value.
 vinyl v1 -vcl {
-	import vsthrottle from "${vmod_builddir}/.libs/libvmod_vsthrottle.so";
+	import vsthrottle;
         backend b { .host = "${bad_ip}"; }
 
         sub vcl_recv {

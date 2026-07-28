@@ -6,7 +6,7 @@ server s1 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import str from "${vmod_builddir}/.libs/libvmod_str.so";
+	import str;
 
 	sub vcl_deliver {
 		set resp.http.foo = str.endswith("abcde", "cde");

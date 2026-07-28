@@ -5,7 +5,7 @@ vinyl v1 -arg "-p http_max_hdr=32" -vcl {
 
 	import vtc;
 	import std;
-	import header from "${vmod_builddir}/.libs/libvmod_header.so";
+	import header;
 
 	sub vcl_recv {
 		std.log(vtc.workspace_free(client));

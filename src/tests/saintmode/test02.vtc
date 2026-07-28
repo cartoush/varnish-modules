@@ -23,7 +23,7 @@ server s2 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import saintmode from "${vmod_builddir}/.libs/libvmod_saintmode.so";
+	import saintmode;
 	import directors;
 
 	sub vcl_init {

@@ -11,7 +11,7 @@ server s1 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import bodyaccess from "${vmod_builddir}/.libs/libvmod_bodyaccess.so";
+	import bodyaccess;
 	import std;
 
 	sub vcl_recv {

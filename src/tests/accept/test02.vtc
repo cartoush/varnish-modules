@@ -3,7 +3,7 @@ vtest "Quality quality assurance"
 server s1 {} -start
 
 vinyl v1 -vcl+backend {
-	import accept from "${vmod_builddir}/.libs/libvmod_accept.so";
+	import accept;
 
 	sub vcl_init {
 		new rule = accept.rule("foo");

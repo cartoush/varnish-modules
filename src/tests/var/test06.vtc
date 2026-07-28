@@ -6,7 +6,7 @@ server s0 {
 } -dispatch
 
 vinyl v1 -vcl+backend {
-	import var from "${vmod_builddir}/.libs/libvmod_var.so";
+	import var;
 	import vtc;
 
 	sub vcl_deliver {

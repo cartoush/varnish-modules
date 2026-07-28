@@ -1,7 +1,7 @@
 vtest "Make sure the GC doesn't remove buckets in the blocked state (gh#206)"
 
 vinyl v1 -vcl {
-	import vsthrottle from "${vmod_builddir}/.libs/libvmod_vsthrottle.so";
+	import vsthrottle;
 
 	backend default none;
 

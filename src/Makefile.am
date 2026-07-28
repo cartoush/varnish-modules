@@ -88,8 +88,6 @@ TEST_EXTENSIONS = .vtc
 # because of vsthrottle/test05.vtc we need larger buffers than usual
 VTC_LOG_COMPILER = vinyltest -v -b 10M
 AM_VTC_LOG_FLAGS = \
-	-Dvmod_builddir=$(abs_top_builddir)/src \
-	-Dvmod_directors="directors from \"$(VINYLAPI_VMODDIR)/libvmod_directors.so\"" \
 	-p vcl_path="$(abs_top_srcdir)/vcl:$(VINYLAPI_VCLDIR)" \
 	-p vmod_path="$(abs_builddir)/.libs:$(vmoddir):$(VINYLAPI_VMODDIR)"
 

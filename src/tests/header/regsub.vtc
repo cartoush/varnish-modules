@@ -11,7 +11,7 @@ server s1 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import header from "${vmod_builddir}/.libs/libvmod_header.so";
+	import header;
 
 	sub vcl_recv {
 		header.regsub(req, "bam", "quux", all=true);
@@ -66,7 +66,7 @@ logexpect l1 -v v1 -d 1 -g vxid -q {Begin ~ "^req"} {
 ## Errors
 
 vinyl v1 -errvcl "Expected argument: REGEX regex" {
-	import header from "${vmod_builddir}/.libs/libvmod_header.so";
+	import header;
 	backend b { .host="${bad_ip}"; }
 
 	sub vcl_recv {
@@ -75,7 +75,7 @@ vinyl v1 -errvcl "Expected argument: REGEX regex" {
 }
 
 vinyl v1 -errvcl "Expected argument: REGEX regex" {
-	import header from "${vmod_builddir}/.libs/libvmod_header.so";
+	import header;
 	backend b { .host="${bad_ip}"; }
 
 	sub vcl_recv {

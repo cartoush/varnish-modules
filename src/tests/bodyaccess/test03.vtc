@@ -10,7 +10,7 @@ server s1 {
 # rematch_req_body is case sensitive.
 
 vinyl v1 -vcl+backend {
-	import bodyaccess from "${vmod_builddir}/.libs/libvmod_bodyaccess.so";
+	import bodyaccess;
 	import std;
 
 	sub vcl_recv {

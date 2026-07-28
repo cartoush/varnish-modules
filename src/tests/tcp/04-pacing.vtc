@@ -8,7 +8,7 @@ server s1 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import tcp from "${vmod_builddir}/.libs/libvmod_tcp.so";
+	import tcp;
 
 	sub vcl_deliver {
 		tcp.set_socket_pace(1000);

@@ -10,7 +10,7 @@ server s1 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import xkey from "${vmod_builddir}/.libs/libvmod_xkey.so";
+	import xkey;
 
 	sub vcl_recv {
 		if (req.http.xkey-purge) {

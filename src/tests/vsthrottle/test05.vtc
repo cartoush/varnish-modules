@@ -6,7 +6,7 @@ server s1 {
 } -start
 
 vinyl v1 -vcl+backend {
-	import vsthrottle from "${vmod_builddir}/.libs/libvmod_vsthrottle.so";
+	import vsthrottle;
 
 	sub vcl_deliver {
 		set resp.http.foo-count0 = vsthrottle.remaining("foo", 5, 1s);

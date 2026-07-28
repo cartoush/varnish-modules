@@ -4,7 +4,7 @@ vinyl v1 -vcl {
 	backend proforma None;
 
 	import vtc;
-	import header from "${vmod_builddir}/.libs/libvmod_header.so";
+	import header;
 
 	sub vcl_recv {
 		vtc.workspace_alloc(client, -2);
