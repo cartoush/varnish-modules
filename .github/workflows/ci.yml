@@ -1,0 +1,153 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  distcheck:
+    name: distcheck (${{ matrix.distro }})
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: alpine
+            image: alpine
+            install: |
+              apk add git pkgconf autoconf automake libtool python3 \
+                py3-docutils make zlib-dev gcc musl-dev py3-sphinx pcre2-dev linux-headers \
+                libunwind-dev pandoc curl unzip grep tar
+          - distro: debian
+            image: debian:trixie
+            install: |
+              apt-get update
+              apt-get install -y git build-essential pkg-config autotools-dev autoconf \
+                libtool python3-docutils python3 python3-sphinx libpcre2-dev \
+                libreadline-dev zlib1g-dev pandoc curl unzip
+          - distro: fedora
+            image: fedora:rawhide
+            install: |
+              dnf install -y git pkg-config autoreconf automake libtool \
+                python3-docutils gawk python3-sphinx pcre2-devel readline-devel pandoc \
+                unzip
+          - distro: ubuntu
+            image: ubuntu:devel
+            install: |
+              apt-get update
+              apt-get install -y git build-essential pkg-config autotools-dev autoconf \
+                libtool python3-docutils python3 python3-sphinx libpcre2-dev zlib1g-dev \
+                libreadline-dev pandoc curl unzip
+          - distro: opensuse
+            image: opensuse/tumbleweed:latest
+            install: |
+              zypper --non-interactive install git pkg-config autoconf \
+                automake gawk make python313-docutils libtool find pcre2-devel gcc \
+                python313-Sphinx readline-devel zlib-devel diffutils pandoc curl unzip
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: ${{ matrix.install }}
+
+      - name: Clone and build vinyl-cache
+        run: |
+          git clone --single-branch --recurse-submodules https://code.vinyl-cache.org/vinyl-cache/vinyl-cache
+          cd vinyl-cache
+          ./autogen.sh && ./configure
+          make install -j
+
+      - name: Bootstrap
+        run: ./bootstrap
+
+      - name: Set PKG_CONFIG_PATH
+        if: matrix.distro == 'fedora' || matrix.distro == 'opensuse'
+        run: echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig" >> "$GITHUB_ENV"
+
+      - name: Distcheck
+        run: make distcheck -j
+
+      - name: Upload test-suite.log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-suite-log-${{ matrix.distro }}
+          path: vdfp-pipe-trunk/_build/sub/src/test-suite.log
+          if-no-files-found: ignore
+
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    container: alpine
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apk add git pkgconf autoconf automake libtool python3 py3-docutils \
+            make zlib-dev gcc musl-dev py3-sphinx pcre2-dev linux-headers \
+            libunwind-dev pandoc curl unzip grep lcov gzip
+
+      - name: Clone and build vinyl-cache
+        run: |
+          git clone --single-branch --recurse-submodules https://code.vinyl-cache.org/vinyl-cache/vinyl-cache
+          cd vinyl-cache
+          ./autogen.sh && ./configure
+          make install -j
+
+      - name: Bootstrap
+        run: ./bootstrap
+
+      - name: Coverage
+        run: |
+          export GCOV_PREFIX="$PWD/coverage_data"
+          export GCOV_PREFIX_STRIP=$(echo "$PWD/coverage_data" | grep -o / | wc -l)
+          make coverage -j
+
+      - name: Upload test-suite.log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-suite-log-coverage
+          path: vdfp-pipe-trunk/_build/sub/src/test-suite.log
+          if-no-files-found: ignore
+
+  tidy:
+    name: tidy
+    runs-on: ubuntu-latest
+    container: alpine
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apk add git pkgconf autoconf automake libtool python3 py3-docutils \
+            make zlib-dev gcc musl-dev py3-sphinx pcre2-dev linux-headers \
+            libunwind-dev pandoc curl unzip grep lcov gzip bear clang \
+            clang-extra-tools
+
+      - name: Clone and build vinyl-cache
+        run: |
+          git clone --single-branch --recurse-submodules https://code.vinyl-cache.org/vinyl-cache/vinyl-cache
+          cd vinyl-cache
+          ./autogen.sh && ./configure
+          make install -j
+
+      - name: Bootstrap
+        run: ./bootstrap
+
+      - name: Build with bear
+        run: bear -- make -j
+
+      - name: Run clang-tidy
+        run: clang-tidy --warnings-as-errors="*" src/pattern.c src/vmod_hoailona.h src/vmod_hoailona.c
